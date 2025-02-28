@@ -1,0 +1,14 @@
+<h1>Edit User</h1>
+
+<form method="POST">
+    <label for="role">Role</label>
+    <input type="text" name="role" value="{{ user.role }}" required>
+
+    <label for="bio">Bio</label>
+    <textarea name="bio">{{ user.bio }}</textarea>
+
+    <label for="profile_picture">Profile Picture</label>
+    <input type="text" name="profile_picture" value="{{ user.profile_picture }}">
+
+    <button type="submit">Save Changes</button>
+</form>

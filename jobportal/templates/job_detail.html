@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-4 fw-bold text-primary">{{ job.title }}</h1>
+        <span class="badge bg-{{ 'success' if job.job_status == 'Open' else 'danger' }} fs-5">
+            {{ job.job_status }}
+        </span>
+    </div>
+
+    <div class="job-card card border-0 shadow-lg">
+        <div class="card-body p-4">
+            <div class="row g-4">
+                <!-- Job Image Column -->
+                <div class="col-md-3">
+                    <div class="job-image ratio ratio-4x3 overflow-hidden rounded-3">
+                        {% if job.photo %}
+                        <img src="{{ url_for('static', filename='uploads/' + job.photo) }}" 
+                             alt="{{ job.title }}" 
+                             class="img-fluid hover-zoom">
+                        {% else %}
+                        <div class="bg-light d-flex align-items-center justify-content-center">
+                            <i class="fas fa-briefcase fa-3x text-muted"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Job Details Column -->
+                <div class="col-md-9">
+                    <div class="d-flex flex-column h-100">
+                        <!-- Basic Info -->
+                        <div class="mb-4">
+                            <h3 class="h2 mb-3">{{ job.company }}</h3>
+                            <div class="d-flex gap-4 text-muted mb-3 flex-wrap">
+                                <div>
+                                    <i class="fas fa-map-marker-alt me-2"></i>
+                                    {{ job.location }}
+                                </div>
+                                <div>
+                                    <i class="fas fa-clock me-2"></i>
+                                    {{ job.job_type }}
+                                </div>
+                                <div>
+                                    <i class="fas fa-coins me-2"></i>
+                                    ₹{{ job.salary }} LPA
+                                </div>
+                                <div>
+                                    <i class="fas fa-user-graduate me-2"></i>
+                                    {{ job.experience }}+ Years
+                                </div>
+                                <div>
+                                    <i class="fas fa-users me-2"></i>
+                                    {{ job.vacancy }} Positions
+                                </div>
+                            </div>
+                            <div class="text-muted">
+                                <i class="fas fa-calendar-day me-2"></i>
+                                Posted {{ job.created_at.strftime('%d %b, %Y') }}
+                            </div>
+                        </div>
+
+                        <!-- Job Details Sections -->
+                        <div class="job-sections">
+                            <section class="mb-4">
+                                <h4 class="h5 text-primary mb-3">About the Role</h4>
+                                <p class="text-muted">{{ job.description }}</p>
+                            </section>
+
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <section class="mb-4">
+                                        <h4 class="h5 text-primary mb-3">Requirements</h4>
+                                        <ul class="list-unstyled text-muted">
+                                            {% for req in (job.requirements or '').split('\n') %}
+                                            {% if req.strip() %}
+                                            <li class="d-flex align-items-start mb-2">
+                                                <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                                {{ req }}
+                                            </li>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </section>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <section class="mb-4">
+                                        <h4 class="h5 text-primary mb-3">Qualifications</h4>
+                                        <ul class="list-unstyled text-muted">
+                                            {% for qual in (job.qualifications or '').split('\n') %}
+                                            {% if qual.strip() %}
+                                            <li class="d-flex align-items-start mb-2">
+                                                <i class="fas fa-dot-circle text-info me-2 mt-1"></i>
+                                                {{ qual }}
+                                            </li>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </section>
+                                </div>
+                            </div>
+
+                            <section class="mb-4">
+                                <h4 class="h5 text-primary mb-3">Experience & Vacancies</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="bg-light p-3 rounded-2 mb-3">
+                                            <h6 class="text-muted mb-2">Minimum Experience</h6>
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-user-graduate me-2 text-primary"></i>
+                                                <span class="fw-medium">{{ job.experience }}+ Years</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="bg-light p-3 rounded-2">
+                                            <h6 class="text-muted mb-2">Available Positions</h6>
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-users me-2 text-primary"></i>
+                                                <span class="fw-medium">{{ job.vacancy }} Openings</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="mt-auto pt-4">
+                            <div class="d-flex gap-3 flex-wrap">
+                                {% if user_applied %}
+                                <form action="{{ url_for('withdraw_application', job_id=job.id) }}" method="POST">
+                                    <button type="submit" class="btn btn-danger btn-lg px-4">
+                                        <i class="fas fa-times-circle me-2"></i>Withdraw Application
+                                    </button>
+                                </form>
+                                {% else %}
+                                <form action="{{ url_for('apply_job', job_id=job.id) }}" method="POST">
+                                    <button type="submit" class="btn btn-primary btn-lg px-4">
+                                        <i class="fas fa-paper-plane me-2"></i>Apply Now
+                                    </button>
+                                </form>
+                                {% endif %}
+                                
+                                <form action="{{ url_for('save_job_view', job_id=job.id) }}" method="POST">
+                                    <button type="submit" class="btn btn-outline-success btn-lg px-4">
+                                        <i class="fas fa-bookmark me-2"></i>Save Job
+                                    </button>
+                                </form>
+                                
+                                <a href="{{ url_for('home') }}" class="btn btn-secondary btn-lg px-4">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Jobs
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .job-card {
+        border-radius: 15px;
+        transition: transform 0.2s;
+    }
+
+    .job-card:hover {
+        transform: translateY(-3px);
+    }
+
+    .hover-zoom {
+        transition: transform 0.3s ease;
+        object-fit: cover;
+    }
+
+    .hover-zoom:hover {
+        transform: scale(1.05);
+    }
+
+    .job-sections section {
+        border-bottom: 1px solid #eee;
+        padding-bottom: 1.5rem;
+    }
+
+    .job-sections section:last-child {
+        border-bottom: none;
+    }
+
+    .text-primary {
+        color: #2a4a7d !important;
+    }
+
+    .btn-primary {
+        background-color: #2a4a7d;
+        border-color: #2a4a7d;
+    }
+
+    .btn-outline-success {
+        border-color: #28a745;
+        color: #28a745;
+    }
+
+    .btn-outline-success:hover {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .badge {
+        padding: 0.6em 1.2em;
+        border-radius: 1rem;
+    }
+
+    .mt-auto .btn {
+        min-height: 54px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+        .job-image {
+            margin-bottom: 1.5rem;
+        }
+        
+        .d-flex.gap-4 {
+            flex-direction: column;
+            gap: 1rem !important;
+        }
+        
+        .mt-auto .btn {
+            min-height: 48px;
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
