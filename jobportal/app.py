@@ -17,7 +17,7 @@ app.config['UPLOAD_FOLDER'] = 'static/uploads/'  # Folder to store uploaded resu
 app.config['ALLOWED_EXTENSIONS'] = {'pdf', 'doc', 'docx', 'txt'}
 
 # Configure the secret key for sessions and flash messages
-app.secret_key = 'vs07'
+app.secret_key = 'your secret key'
 
 # Configure the database URI (using MySQL with MySQL Connector)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/jobportal'
@@ -28,9 +28,9 @@ app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587  # Port for TLS
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = 'skillnestteam@gmail.com'  # Your email address
-app.config['MAIL_PASSWORD'] = 'jmtk vrti dknk vgxp'  # Your Gmail App Password
-app.config['MAIL_DEFAULT_SENDER'] = 'skillnestteam@gmail.com'  # Your email address
+app.config['MAIL_USERNAME'] = ' '  # Your email address
+app.config['MAIL_PASSWORD'] = ' '  # Your Gmail App Password
+app.config['MAIL_DEFAULT_SENDER'] = 'your mail id'  # Your email address
 app.config['MAIL_DEBUG'] = True
 
 mail = Mail(app)
